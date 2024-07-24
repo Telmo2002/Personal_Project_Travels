@@ -1,42 +1,33 @@
+// 
+
 var express = require('express');
 var router = express.Router();
-var env = require('../config/env')
-var axios = require('axios')
+var path = require('path');
 
 /* GET home page. */
-
-router.get('/retrieveAll', function(req, res) {
-  var data = new Date().toISOString().substring(0,19)
-  axios.get(env.apiAccessPoint+"/listas")
-    .then(response => {
-      res.render('index', { lists: response.data, d: data });
-    })
-    .catch(err => {
-      res.render('error', {error: err})
-    })
+router.get('/', function(req, res, next) {
+  const filePath = path.join(__dirname, '../views', 'index.html');
+  console.log('Serving file:', filePath);
+  res.sendFile(filePath, function(err) {
+    if (err) {
+      console.log('Error sending file:', err);
+      next(err);
+    }
+  });
 });
 
-router.get('/retrieveList/:id', function(req, res) {
-  var data = new Date().toISOString().substring(0,19)
-  axios.get(env.apiAccessPoint+"/listas/" + req.params.id)
-    .then(response => {
-      res.render('listaCompras', { list: response.data, d: data });
-    })
-    .catch(err => {
-      res.render('error', {error: err})
-    })
+router.get('/create-task', function(req, res, next) {
+  res.sendFile(path.join(__dirname, '../views', 'create-task.html'));
 });
 
-router.get('/lista/:idLista/deleteProduto/:idProd', function(req, res) {
-  var data = new Date().toISOString().substring(0,19)
-  console.log(req.params.idProd)
-  axios.delete(env.apiAccessPoint+"/listas/"+ req.params.idLista +"/produtos/"+ req.params.idProd)
-    .then(response => {
-      res.redirect('/retrieveList/' + req.params.idLista)
-    })
-    .catch(err => {
-      res.render('error', {error: err})
-    })
+/* POST submit task. */
+router.post('/submit-task', function(req, res, next) {
+  // Handle form submission here
+  console.log('Task Name:', req.body.taskName);
+  console.log('Task Description:', req.body.taskDescription);
+
+  // Redirect or respond to the user
+  res.redirect('/');
 });
 
 module.exports = router;

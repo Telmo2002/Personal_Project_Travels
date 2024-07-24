@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Criar Tarefa - Travels</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    /* Adiciona margem inferior aos inputs e textarea */
+    .input-margin, .textarea-margin {
+      margin-bottom: 16px; /* Ajuste o valor conforme necessário */
+    }
+
+    /* Adiciona margem inferior ao botão de envio */
+    .submit-button {
+      margin-bottom: 16px; /* Ajuste o valor conforme necessário */
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+  <h3 class="w3-bar-item">Menu</h3>
+  <a href="/" class="w3-bar-item w3-button">Página Inicial</a>
+  <a href="#" class="w3-bar-item w3-button">Link 2</a>
+  <a href="#" class="w3-bar-item w3-button">Link 3</a>
+</div>
+
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+  <div class="w3-container w3-teal">
+    <h1>Iniciar uma nova Viagem</h1>
+  </div>
+
+  <div class="w3-container">
+    <form action="/submit-task" method="post">
+        
+      <label style="display: block; margin-top: 10px;" for="taskName">Nome da Viagem:</label>
+      <input class="w3-input input-margin" type="text" id="taskName" name="taskName" required>
+
+      <label for="quantiaDisp">Quantia que pretendo gastar:</label>
+      <input class="w3-input input-margin" type="number" id="quantiaDisp" name="quantiaDisp" placeholder="€€€" step="1" min="0" required>
+
+      <label for="taskDescription">Descrição:</label>
+      <textarea class="w3-input textarea-margin" id="taskDescription" name="taskDescription" rows="4"></textarea>
+      
+      <label for="dataViagem">A viagem terá ínicio em:</label>
+      <p><input class="w3-input w3-padding-16 w3-border input-margin" type="datetime-local" placeholder="Date and time" required name="date" value="2024-07-01T20:00"></p>
+
+      <button class="w3-button w3-green w3-margin-top submit-button" type="submit">Criar Viagem</button>
+    </form>
+  </div>
+
+</div>
+
+</body>
+</html>

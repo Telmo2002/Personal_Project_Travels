@@ -25,6 +25,8 @@ router.post('/submit-task', function(req, res, next) {
   // Handle form submission here
   console.log('Task Name:', req.body.taskName);
   console.log('Task Description:', req.body.taskDescription);
+  console.log('Quantia:', req.body.taskDescription)
+  console.log('', req.body.taskDescription)
 
   // Redirect or respond to the user
   res.redirect('/');

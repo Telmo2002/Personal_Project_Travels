@@ -23,23 +23,27 @@
     <h1>Olá, Vamos viajar??</h1>
   </div>
 
-  <!-- Uncomment and update the image path if you want to include an image -->
-  <!-- <img src="/images/img_car.jpg" alt="Car" style="width:100%"> -->
-
   <div class="w3-display-container">
-    <img src="images/MontBlanc.jpg" alt="chamonix", class="w3-opacity-min", style="width:100%">
-    <!-- <h2>Aqui vou colocar os botões para criar uma tarefa</h2>
-    <p>Criar a primeira viagem.</p> -->
+    <img src="images/MontBlanc.jpg" alt="chamonix" class="w3-opacity-min" style="width:100%">
     <div class="w3-display-topmiddle w3-container">
+      <% if (viagens.length > 0) { %>
+        <h2>Escolha uma viagem:</h2>
+          <div id="buttons-container" class="w3-center">
+            <% viagens.forEach(function(viagem) { %>
+              <a href="/viagem/<%= viagem._id %>" class="w3-button w3-round-xxlarge w3-black" style="display: block; margin-bottom: 10px;"><%= viagem.name %></a>
+            <% }); %>
+          </div>
+      <% } else { %>
         <h2>Crie a sua primeira viagem.</h2>
-        <div class="w3-center">
-            <a href="/create-task"><button class="w3-button w3-xlarge w3-circle w3-black">+</button></a>
-        </div>
+      <% } %>
+      <div class="w3-center" style="margin-top: 20px;">
+        <a href="/create-task"><button class="w3-button w3-xlarge w3-circle w3-black">+</button></a>
+      </div>
     </div>
-    <!-- <p>The left margin of the page content is set to the same value.</p> -->
   </div>
 
 </div>
 
 </body>
 </html>
+

@@ -1,22 +1,25 @@
 const mongoose = require('mongoose')
 
-var quantidadeSchema = new mongoose.Schema({
-    valor: String,
-    unidade: String
+var gastoSchema = new mongoose.Schema({
+    name: String,
+    amount: Number,
+    metodoPag: String
 });
 
-var produtoSchema = new mongoose.Schema({
-    _id: String,
-    designacao: String,
-    categoria: String,
-    quantidade: quantidadeSchema
-});
+var viagemSchema = new mongoose.Schema({
+    name: String,
+    amount: Number,
+    description: String, 
+    date: Date,
+    gastos:[gastoSchema]
+}, { collection: 'viagens' }); // Nome da coleção especificado aqui
 
-var listaSchema = new mongoose.Schema({
-    _id: String,
-    designacao: String,
-    data: String,
-    produtos: [produtoSchema]
-});
 
-module.exports = mongoose.model('lista', listaSchema)
+// var listaSchema = new mongoose.Schema({
+//     _id: String,
+//     designacao: String,
+//     data: String,
+//     produtos: [produtoSchema]
+// });
+
+module.exports = mongoose.model('viagem', viagemSchema)

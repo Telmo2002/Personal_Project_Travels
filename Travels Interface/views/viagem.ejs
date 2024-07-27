@@ -1,0 +1,92 @@
+<!-- view/viagem.ejs -->
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Detalhes da Viagem - Travels</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
+  <h3 class="w3-bar-item">Menu</h3>
+  <a href="/" class="w3-bar-item w3-button">Página Inicial</a>
+  <a href="#" class="w3-bar-item w3-button">Lista de Viagens</a>
+</div>
+
+<!-- Page Content -->
+<div style="margin-left:15%">
+
+  <div class="w3-container w3-teal">
+    <h1><%= viagem.name %></h1>
+  </div>
+
+  <div class="w3-container">
+    <h2>Detalhes da Viagem</h2>
+    <p><strong>Quantia disponível inicialmente:</strong> €<%= viagem.amount %></p>
+    <p><strong>Descrição:</strong> <%= viagem.description %></p>
+    <p><strong>Data:</strong> <%= viagem.dateFormatted %></p>
+  </div>
+
+  <div class="w3-container w3-padding-16">
+    <h2>Resumo Financeiro</h2>
+    <p>
+      <% if (quantiaDisponivel < 0) { %>
+        <strong>Quantia ultrapassada em:</strong> €<%= Math.abs(quantiaDisponivel) %>
+      <% } else { %>
+      <strong>Quantia Disponível:</strong> €<%= quantiaDisponivel %>
+      <% } %>
+    </p>
+    <p><strong>Total Gasto no Cartão:</strong> €<%= totalGastosCartao %></p>
+    <p><strong>Total Gasto em Dinheiro:</strong> €<%= totalGastosDinheiro %></p>
+  </div>
+
+  <div class="w3-container w3-padding-16">
+    <h3>Adicionar Gasto</h3>
+    <form action="/viagem/<%= viagem._id %>/add-gasto" method="POST" class="w3-container w3-card-4 w3-light-grey w3-text-teal w3-margin">
+      <div class="w3-row w3-section">
+        <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-dollar"></i></div>
+        <div class="w3-rest">
+          <input class="w3-input w3-border" name="gastoName" type="text" placeholder="Nome do Gasto" required>
+        </div>
+      </div>
+      
+      <div class="w3-row w3-section">
+        <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-money"></i></div>
+        <div class="w3-rest">
+          <input class="w3-input w3-border" name="gastoQuantia" type="number" placeholder="Quantia Gasta" required>
+        </div>
+      </div>
+      
+      <div class="w3-row w3-section">
+        <div class="w3-col" style="width:50px"><i class="w3-xxlarge fa fa-credit-card"></i></div>
+        <div class="w3-rest">
+          <input class="w3-radio" type="radio" name="pagamento" value="cartao" checked> Cartão
+          <input class="w3-radio" type="radio" name="pagamento" value="dinheiro"> Dinheiro
+        </div>
+      </div>
+      
+      <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-ripple w3-round-xxlarge" type="submit">Adicionar Gasto</button>
+    </form>
+  </div>
+
+  <div class="w3-container">
+    <h3>Gastos Realizados</h3>
+    <ul class="w3-ul">
+      <% viagem.gastos.forEach(function(gasto) { %>
+        <li>
+          <strong>Nome:</strong> <%= gasto.name %> | 
+          <strong>Quantia:</strong> €<%= gasto.amount %> | 
+          <strong>Pagamento:</strong> <%= gasto.metodoPag %>
+        </li>
+      <% }); %>
+    </ul>
+  </div>
+
+</div>
+
+</body>
+</html>

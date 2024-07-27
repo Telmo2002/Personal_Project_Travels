@@ -1,1 +1,1 @@
-module.exports.apiAccessPoint = "http://localhost:7011/api"
+module.exports.apiAccessPoint = "http://localhost:7002"

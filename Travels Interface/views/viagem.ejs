@@ -1,5 +1,3 @@
-<!-- view/viagem.ejs -->
-
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -7,6 +5,16 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Detalhes da Viagem - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    .page-content {
+      position: relative;
+    }
+    .delete-button-container {
+      position: absolute;
+      top: 70px;
+      right: 10px;
+    }
+  </style>
 </head>
 <body>
 
@@ -18,11 +26,19 @@
 </div>
 
 <!-- Page Content -->
-<div style="margin-left:15%">
+<div class="page-content" style="margin-left:15%">
 
   <div class="w3-container w3-teal">
     <h1><%= viagem.name %></h1>
   </div>
+
+  <!-- Delete Button Positioned Absolutely -->
+  <div class="delete-button-container">
+    <form action="/viagem/<%= viagem._id %>/delete" method="POST" onsubmit="return confirm('Tem certeza que deseja eliminar esta viagem?');">
+      <button class="w3-button w3-block w3-red w3-padding-16 w3-section w3-ripple w3-round-xxlarge" type="submit">Eliminar Viagem</button>
+    </form>
+  </div>
+  
 
   <div class="w3-container">
     <h2>Detalhes da Viagem</h2>
@@ -37,7 +53,7 @@
       <% if (quantiaDisponivel < 0) { %>
         <strong>Quantia ultrapassada em:</strong> €<%= Math.abs(quantiaDisponivel) %>
       <% } else { %>
-      <strong>Quantia Disponível:</strong> €<%= quantiaDisponivel %>
+        <strong>Quantia Disponível:</strong> €<%= quantiaDisponivel %>
       <% } %>
     </p>
     <p><strong>Total Gasto no Cartão:</strong> €<%= totalGastosCartao %></p>

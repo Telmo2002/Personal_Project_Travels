@@ -46,25 +46,30 @@ module.exports.addViagem = v => {
         });
 }
 
-module.exports.updateViagem = l => {
-    return Viagem.updateOne({_id:l._id}, l)
-            .then(resposta => {
-                return resposta
-            })
-            .catch(erro => {
-                return erro
-            })
-}
+// module.exports.updateViagem = l => {
+//     return Viagem.updateOne({_id:l._id}, l)
+//             .then(resposta => {
+//                 return resposta
+//             })
+//             .catch(erro => {
+//                 return erro
+//             })
+// }
 
-module.exports.deleteViagem = id => {
-    return Viagem.deleteOne({_id:id})
-            .then(resposta => {
-                return resposta
-            })
-            .catch(erro => {
-                return erro
-            })
-}
+module.exports.deleteViagem = (id) => {
+    return Viagem.deleteOne({ _id: id })
+      .then(resposta => {
+        if (resposta.deletedCount === 0) {
+          // Se nada foi deletado, a viagem não foi encontrada
+          throw new Error('Viagem não encontrada.');
+        }
+        return resposta;
+      })
+      .catch(erro => {
+        // Se houver um erro, retornamos o erro para ser tratado na rota
+        throw erro;
+      });
+  }
 
 
 module.exports.addGasto = (id, gasto) => {

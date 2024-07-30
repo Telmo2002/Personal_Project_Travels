@@ -65,6 +65,19 @@ router.post('/getviagens/:id/add-gasto', function(req, res) {
     });
 });
 
+// POST para excluir uma viagem
+router.post('/deleteViagens/:id', function(req, res) {
+  console.log("Chegou aqui")
+  ListaV.deleteViagem(req.params.id)
+    .then(dados => {
+      res.jsonp(dados);
+    })
+    .catch(erro => {
+      res.render('error', { error: erro, message: "Erro na eliminação da viagem." });
+    });
+});
+
+
 // router.get('/api/categorias', function(req, res) {
 //   ListaV.categorias()
 //     .then(ListaV => {

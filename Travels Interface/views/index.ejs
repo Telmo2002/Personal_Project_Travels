@@ -5,6 +5,49 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página Inicial - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    .top-center-container {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      margin-top: 20px;
+      width: 100%;
+    }
+    .button-wrapper {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      width: 80%;
+      margin: 0 auto;
+    }
+    .large-button {
+      display: block;
+      width: 80%;
+      margin: 10px 0;
+      padding: 15px;
+      font-size: 18px;
+    }
+    /* Estilos para os toasts */
+    .toast {
+      position: fixed;
+      bottom: 20px;
+      left: 20px; /* Alinhado ao canto inferior esquerdo */
+      padding: 10px;
+      border-radius: 5px;
+      z-index: 1000;
+      display: none; /* Inicialmente escondido */
+      min-width: 200px;
+      text-align: center;
+    }
+    .toast-success {
+      background-color: #4CAF50; /* Verde */
+      color: white;
+    }
+    .toast-error {
+      background-color: #f44336; /* Vermelho */
+      color: white;
+    }
+  </style>
 </head>
 <body>
 
@@ -20,19 +63,19 @@
 <div style="margin-left:15%">
 
   <div class="w3-container w3-teal">
-    <h1>Olá, Vamos viajar??</h1>
+    <h1><strong>Olá, Vamos viajar??</strong></h1>
   </div>
 
   <div class="w3-display-container">
     <img src="images/MontBlanc.jpg" alt="chamonix" class="w3-opacity-min" style="width:100%">
-    <div class="w3-display-topmiddle w3-container">
+    <div class="w3-display-topleft w3-container top-center-container">
       <% if (viagens.length > 0) { %>
-        <h2>Escolha uma viagem:</h2>
-          <div id="buttons-container" class="w3-center">
-            <% viagens.forEach(function(viagem) { %>
-              <a href="/viagem/<%= viagem._id %>" class="w3-button w3-round-xxlarge w3-black" style="display: block; margin-bottom: 10px;"><%= viagem.name %></a>
-            <% }); %>
-          </div>
+        <h2><strong>Escolha uma viagem:</strong></h2>
+        <div class="button-wrapper">
+          <% viagens.forEach(function(viagem) { %>
+            <a href="/viagem/<%= viagem._id %>" class="w3-button w3-round-xxlarge w3-black large-button"><%= viagem.name %></a>
+          <% }); %>
+        </div>
       <% } else { %>
         <h2>Crie a sua primeira viagem.</h2>
       <% } %>
@@ -44,6 +87,34 @@
 
 </div>
 
+<!-- Toast de Sucesso -->
+<div id="toast-success" class="toast toast-success">
+  <h3><%= success_msg %></h3>
+</div>
+
+<!-- Toast de Erro -->
+<div id="toast-error" class="toast toast-error">
+  <h3><%= error_msg %></h3>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    if (success_msg) { 
+      var toastSuccess = document.getElementById('toast-success');
+      toastSuccess.style.display = 'block';
+      setTimeout(function() {
+        toastSuccess.style.display = 'none';
+      }, 5000); // Ocultar após 5 segundos
+    }
+    if (error_msg) {
+      var toastError = document.getElementById('toast-error');
+      toastError.style.display = 'block';
+      setTimeout(function() {
+        toastError.style.display = 'none';
+      }, 5000); // Ocultar após 5 segundos
+    }
+  });
+</script>
+
 </body>
 </html>
-

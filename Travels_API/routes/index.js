@@ -67,7 +67,6 @@ router.post('/getviagens/:id/add-gasto', function(req, res) {
 
 // POST para excluir uma viagem
 router.post('/deleteViagens/:id', function(req, res) {
-  console.log("Chegou aqui")
   ListaV.deleteViagem(req.params.id)
     .then(dados => {
       res.jsonp(dados);

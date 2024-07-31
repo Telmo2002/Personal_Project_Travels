@@ -85,7 +85,7 @@ router.post('/viagem/:id/add-gasto', function(req, res) {
 
 // POST para excluir uma viagem
 router.post('/viagem/:id/delete', function(req, res) {
-  axios.delete(`${env.apiAccessPoint}/deleteViagens/${req.params.id}`)
+  axios.post(`${env.apiAccessPoint}/deleteViagens/${req.params.id}`)
     .then(response => {
       req.flash('success_msg', 'Viagem eliminada com sucesso.');
       res.redirect('/');

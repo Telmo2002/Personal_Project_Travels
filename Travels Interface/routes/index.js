@@ -115,9 +115,11 @@ router.post('/submit-task', async function(req, res, next) {
     const response = await axios.post(env.apiAccessPoint + "/addviagem", taskData);
     if (response.status === 200) {
       console.log('Viagem criada com sucesso!');
+      req.flash('success_msg', 'Viagem criada com sucesso.');
       res.redirect('/');
     } else {
       console.error('Erro ao criar a viagem:', response.data);
+      req.flash('error_msg', 'Erro ao eliminar a viagem.');
       res.status(500).send('Erro ao criar a viagem');
     }
   } catch (error) {

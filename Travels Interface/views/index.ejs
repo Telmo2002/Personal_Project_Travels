@@ -31,21 +31,31 @@
     .toast {
       position: fixed;
       bottom: 20px;
-      left: 20px; /* Alinhado ao canto inferior esquerdo */
-      padding: 10px;
-      border-radius: 5px;
+      right: 20px;
+      padding: 15px;
+      border-radius: 8px;
       z-index: 1000;
-      display: none; /* Inicialmente escondido */
-      min-width: 200px;
-      text-align: center;
+      display: none;
+      min-width: 250px;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .toast-success {
-      background-color: #4CAF50; /* Verde */
-      color: white;
+      background-color: #a8e6cf; /* Verde claro com toque azulado */
+      color: #004d40; /* Verde escuro */
     }
     .toast-error {
-      background-color: #f44336; /* Vermelho */
+      background-color: #f44336;
       color: white;
+    }
+    .toast h3 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: bold;
+    }
+    .toast p {
+      font-size: 14px;
+      margin: 5px 0 0 0;
     }
   </style>
 </head>
@@ -87,31 +97,44 @@
 
 </div>
 
-<!-- Toast de Sucesso -->
-<div id="toast-success" class="toast toast-success">
-  <h3><%= success_msg %></h3>
-</div>
+<!-- Toasts (Serão incluídos apenas se houver mensagens) -->
+<% if (success_msg) { %>
+  <div id="toast-success" class="toast toast-success">
+    <h3>Mensagem de confirmação:</h3>
+    <p><%= success_msg %></p>
+  </div>
+<% } %>
 
-<!-- Toast de Erro -->
-<div id="toast-error" class="toast toast-error">
-  <h3><%= error_msg %></h3>
-</div>
+<% if (error_msg) { %>
+  <div id="toast-error" class="toast toast-error">
+    <h3>Erro:</h3>
+    <p><%= error_msg %></p>
+  </div>
+<% } %>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    if (success_msg) { 
+    var successMsg = '<%= success_msg %>';
+    var errorMsg = '<%= error_msg %>';
+    
+    if (successMsg) {
       var toastSuccess = document.getElementById('toast-success');
-      toastSuccess.style.display = 'block';
-      setTimeout(function() {
-        toastSuccess.style.display = 'none';
-      }, 5000); // Ocultar após 5 segundos
+      if (toastSuccess) {
+        toastSuccess.style.display = 'block';
+        setTimeout(function() {
+          toastSuccess.style.display = 'none';
+        }, 5000);
+      }
     }
-    if (error_msg) {
+    
+    if (errorMsg) {
       var toastError = document.getElementById('toast-error');
-      toastError.style.display = 'block';
-      setTimeout(function() {
-        toastError.style.display = 'none';
-      }, 5000); // Ocultar após 5 segundos
+      if (toastError) {
+        toastError.style.display = 'block';
+        setTimeout(function() {
+          toastError.style.display = 'none';
+        }, 5000);
+      }
     }
   });
 </script>

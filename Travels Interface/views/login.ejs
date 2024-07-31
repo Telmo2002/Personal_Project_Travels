@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <style>
+    .form-container {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+    }
+    .flash-message {
+      position: fixed;
+      bottom: 10px;
+      right: 10px;
+      z-index: 1000;
+    }
+  </style>
+</head>
+<body>
+
+<header class="w3-container w3-teal">
+  <h1>Login</h1>
+</header>
+
+<div class="form-container">
+  <form class="w3-container w3-card-4" action="/login" method="post">
+    <p>
+      <label>Username</label>
+      <input class="w3-input" type="text" name="username" required>
+    </p>
+    <p>
+      <label>Password</label>
+      <input class="w3-input" type="password" name="password" required>
+    </p>
+    <p>
+      <button class="w3-button w3-section w3-teal w3-ripple" type="submit">Log in</button>
+    </p>
+  </form>
+  <% if (error) { %>
+    <div id="toast-error" class="toast toast-error">
+      <h3>Erro:</h3>
+      <p><%= error %></p>
+    </div>
+  <% } %>
+
+</body>
+</html>

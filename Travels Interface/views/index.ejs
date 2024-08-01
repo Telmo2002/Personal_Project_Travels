@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Página Inicial - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="/stylesheets/sidebar.css"> <!-- Link para o CSS externo -->
   <style>
     .top-center-container {
       display: flex;
@@ -27,7 +28,6 @@
       padding: 15px;
       font-size: 18px;
     }
-    /* Estilos para os toasts */
     .toast {
       position: fixed;
       bottom: 20px;
@@ -41,8 +41,8 @@
       box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
     }
     .toast-success {
-      background-color: #a8e6cf; /* Verde claro com toque azulado */
-      color: #004d40; /* Verde escuro */
+      background-color: #a8e6cf;
+      color: #004d40;
     }
     .toast-error {
       background-color: #f44336;
@@ -62,11 +62,15 @@
 <body>
 
 <!-- Sidebar -->
-<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
-  <h3 class="w3-bar-item">Menu</h3>
-  <a href="#" class="w3-bar-item w3-button">Lista de Viagens</a>
-  <a href="#" class="w3-bar-item w3-button">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button">Link 3</a>
+<div class="sidebar">
+  <h3>Menu</h3>
+  <a href="#" class="w3-bar-item w3-button">Perfil</a>
+  <a href="#" class="w3-bar-item w3-button">Sobre nós</a>
+  
+  <!-- Logout Button -->
+  <form action="/logout" method="POST" class="logout-form">
+    <button type="submit">Terminar Sessão</button>
+  </form>
 </div>
 
 <!-- Page Content -->
@@ -97,25 +101,25 @@
 
 </div>
 
-<!-- Toasts (Serão incluídos apenas se houver mensagens) -->
-<% if (success_msg) { %>
+<!-- Toasts -->
+<% if (success) { %>
   <div id="toast-success" class="toast toast-success">
     <h3>Mensagem de confirmação:</h3>
-    <p><%= success_msg %></p>
+    <p><%= success %></p>
   </div>
 <% } %>
 
-<% if (error_msg) { %>
+<% if (error) { %>
   <div id="toast-error" class="toast toast-error">
     <h3>Erro:</h3>
-    <p><%= error_msg %></p>
+    <p><%= error %></p>
   </div>
 <% } %>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {
-    var successMsg = '<%= success_msg %>';
-    var errorMsg = '<%= error_msg %>';
+    var successMsg = '<%= success %>';
+    var errorMsg = '<%= error %>';
     
     if (successMsg) {
       var toastSuccess = document.getElementById('toast-success');

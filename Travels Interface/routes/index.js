@@ -21,6 +21,7 @@ function formatDate(dateString) {
 // Middleware para verificar o token JWT
 function verifyToken(req, res, next) {
   const token = req.cookies.token || req.headers['x-access-token'];
+
   if (token) {
     jwt.verify(token, 'telmo2002', (err, decoded) => {
       if (err) {
@@ -39,7 +40,7 @@ router.get('/', verifyToken, function(req, res) {
   axios.get(`${env.apiAccessPoint}/getviagens`)
     .then(response => {
       res.render('index', {
-        viagens: response.data
+        viagens: response.data,
       });
     })
     .catch(err => {
@@ -104,6 +105,7 @@ router.post('/viagem/:id/add-gasto', verifyToken, function(req, res) {
 
 // POST para excluir uma viagem
 router.post('/viagem/:id/delete', verifyToken, function(req, res) {
+  console.log("eliminou")
   axios.post(`${env.apiAccessPoint}/deleteViagens/${req.params.id}`)
     .then(response => {
       req.flash('success', 'Viagem eliminada com sucesso.');
@@ -150,17 +152,15 @@ router.post('/submit-task', verifyToken, async function(req, res, next) {
 
 // GET login page
 router.get('/login', function(req, res) {
-  res.render('login')
-    // success: req.flash('success'),
-    // error: req.flash('error')
+  res.render('login');
 });
 
 // POST login
 router.post('/login', function(req, res) {
-  axios.post(`http://localhost:7003/users/login`, req.body)
+  axios.post(`${env.authServerAccessPoint}/users/login`, req.body)
     .then(response => {
       res.cookie('token', response.data.token, { httpOnly: true });
-      req.flash('success', 'Login bem-sucedido.');
+      req.flash('success', 'Login bem-sucedido. Seja bem vindo!');
       res.redirect('/');
     })
     .catch(error => {
@@ -169,23 +169,28 @@ router.post('/login', function(req, res) {
     });
 });
 
+// POST logout
+router.post('/logout', function(req, res) {
+  res.clearCookie('token');
+  req.flash('success', 'Sessão terminada com sucesso.');
+  res.redirect('/login');
+});
+
 // GET register page
 router.get('/register', function(req, res) {
-  res.render('register', {
-    success: req.flash('success'),
-    error: req.flash('error')
-  });
+  res.render('register');
 });
 
 // POST register
 router.post('/register', function(req, res) {
-  axios.post(`http://localhost:7003/register`, req.body)
+  console.log("chegou ao register da inter")
+  axios.post(`${env.authServerAccessPoint}/users/register`, req.body)
     .then(response => {
       req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');
       res.redirect('/login');
     })
     .catch(error => {
-      req.flash('error', 'Erro ao registrar o usuário.');
+      req.flash('error', 'O username inserido já existe. Tente outro!');
       res.redirect('/register');
     });
 });

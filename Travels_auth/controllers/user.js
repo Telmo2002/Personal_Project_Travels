@@ -25,15 +25,19 @@ module.exports.getUser = id => {
             })
 }
 
-module.exports.addUser = u => {
-    return User.create(u)
-            .then(resposta => {
-                return resposta
-            })
-            .catch(erro => {
-                return erro
-            })
+// Adiciona um novo utilizador
+module.exports.addUser = (u, password) => {
+    return new Promise((resolve, reject) => {
+        User.register(new User(u), password, (err, user) => {
+            if (err) {
+                reject(err);
+            } else {
+                resolve(user);
+            }
+        });
+    });
 }
+
 
 
 module.exports.updateUser = (id, info) => {

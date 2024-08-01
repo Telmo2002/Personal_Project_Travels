@@ -1,48 +1,135 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
-  <title>Register</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Register - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <style>
-    .form-container {
-      max-width: 500px;
-      margin: auto;
-      padding: 20px;
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      margin: 0;
     }
-    .flash-message {
+    .form-container {
+      background-color: #fff;
+      padding: 30px;
+      border-radius: 12px;
+      box-shadow: 0 6px 10px rgba(0, 0, 0, 0.15);
+      width: 100%;
+      max-width: 400px;
+      text-align: center;
+    }
+    .form-header {
+      margin-bottom: 20px;
+      font-size: 24px;
+      font-weight: bold;
+      color: #333;
+    }
+    .w3-input {
+      margin-bottom: 15px;
+      padding: 12px;
+      border: 1px solid #ddd;
+      border-radius: 8px;
+      box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.1);
+      font-size: 16px;
+      width: 100%;
+      box-sizing: border-box;
+    }
+    .w3-button {
+      padding: 12px;
+      border-radius: 8px;
+      background-color: #4CAF50;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+      border: none;
+    }
+    .w3-button:hover {
+      background-color: #45a049;
+    }
+    .toggle-link {
+      margin-top: 15px;
+      display: block;
+      color: #007BFF;
+      text-decoration: none;
+      font-size: 14px;
+    }
+    .toggle-link:hover {
+      text-decoration: underline;
+    }
+    .toast {
       position: fixed;
-      bottom: 10px;
-      right: 10px;
+      bottom: 20px;
+      right: 20px;
+      padding: 15px;
+      border-radius: 8px;
       z-index: 1000;
+      display: none;
+      min-width: 250px;
+      text-align: left;
+      box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    }
+    .toast-success {
+      background-color: #a8e6cf;
+      color: #004d40;
+    }
+    .toast-error {
+      background-color: #f44336;
+      color: white;
+    }
+    .toast h3 {
+      font-size: 16px;
+      margin: 0;
+      font-weight: bold;
+    }
+    .toast p {
+      font-size: 14px;
+      margin: 5px 0 0 0;
     }
   </style>
 </head>
 <body>
 
-<header class="w3-container w3-teal">
-  <h1>Register</h1>
-</header>
-
-<div class="form-container">
-  <form class="w3-container w3-card-4" action="/register" method="post">
-    <p>
-      <label>Username</label>
-      <input class="w3-input" type="text" name="username" required>
-    </p>
-    <p>
-      <label>Password</label>
-      <input class="w3-input" type="password" name="password" required>
-    </p>
-    <p>
-      <button class="w3-button w3-section w3-teal w3-ripple" type="submit">Register</button>
-    </p>
+<div class="form-container w3-card">
+  <div class="form-header">
+    Register
+  </div>
+  <form action="/register" method="post">
+    <input class="w3-input" type="text" id="username" name="username" placeholder="Username" required>
+    <input class="w3-input" type="password" id="password" name="password" placeholder="Password" required>
+    <button class="w3-button w3-round w3-margin-top" type="submit">Register</button>
   </form>
-  <% if (error.length > 0) { %>
-    <div class="flash-message w3-panel w3-red">
-      <p><%= error %></p>
-    </div>
-  <% } %>
+  <a href="/login" class="toggle-link">Already have an account? Log in here</a>
 </div>
+
+<% if (error) { %>
+  <div id="toast-error" class="toast toast-error">
+    <h3>Erro:</h3>
+    <p><%= error %></p>
+  </div>
+<% } %>
+
+<script>
+  document.addEventListener('DOMContentLoaded', function() {
+    var errorMsg = '<%= error %>';
+    
+    if (errorMsg.length > 0) {
+      var toastError = document.getElementById('toast-error');
+      if (toastError) {
+        toastError.style.display = 'block';
+        setTimeout(function() {
+          toastError.style.display = 'none';
+        }, 5000);
+      }
+    }
+  });
+</script>
 
 </body>
 </html>

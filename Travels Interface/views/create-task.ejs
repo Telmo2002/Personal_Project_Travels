@@ -5,26 +5,29 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Criar Tarefa - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="/stylesheets/sidebar.css"> <!-- Link para o CSS externo -->
   <style>
-    /* Adiciona margem inferior aos inputs e textarea */
     .input-margin, .textarea-margin {
-      margin-bottom: 16px; /* Ajuste o valor conforme necessário */
+      margin-bottom: 16px;
     }
-
-    /* Adiciona margem inferior ao botão de envio */
     .submit-button {
-      margin-bottom: 16px; /* Ajuste o valor conforme necessário */
+      margin-bottom: 16px;
     }
   </style>
 </head>
 <body>
 
 <!-- Sidebar -->
-<div class="w3-sidebar w3-light-grey w3-bar-block" style="width:15%">
-  <h3 class="w3-bar-item">Menu</h3>
-  <a href="/" class="w3-bar-item w3-button">Página Inicial</a>
-  <a href="#" class="w3-bar-item w3-button">Link 2</a>
-  <a href="#" class="w3-bar-item w3-button">Link 3</a>
+<div class="sidebar">
+  <h3>Menu</h3>
+  <a href="/" class="w3-bar-item w3-button">Página inicial</a>
+  <a href="#" class="w3-bar-item w3-button">Perfil</a>
+  <a href="#" class="w3-bar-item w3-button">Sobre nós</a>
+  
+  <!-- Logout Button -->
+  <form action="/logout" method="POST" class="logout-form">
+    <button type="submit">Terminar Sessão</button>
+  </form>
 </div>
 
 <!-- Page Content -->
@@ -36,7 +39,6 @@
 
   <div class="w3-container">
     <form action="/submit-task" method="post">
-        
       <label style="display: block; margin-top: 10px;" for="taskName">Nome da Viagem:</label>
       <input class="w3-input input-margin" type="text" id="taskName" name="taskName" required>
 

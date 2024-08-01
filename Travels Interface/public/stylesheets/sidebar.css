@@ -1,0 +1,67 @@
+/* stylesheets/sidebar.css */
+.sidebar {
+    width: 15%; /* Manter a largura original */
+    position: fixed; /* Fixar a barra lateral */
+    height: 100vh; /* Garantir altura total da tela */
+    background-color: #0097a7; /* Azul mais suave e agradável */
+    color: white; /* Cor do texto */
+    display: flex;
+    flex-direction: column;
+    padding: 20px 10px; /* Adicionar padding vertical consistente */
+    box-shadow: 2px 0 8px rgba(0, 0, 0, 0.2); /* Sombra mais forte para destacar a barra lateral */
+    top: 0; /* Alinhar com o topo da página */
+    border-right: 1px solid #0288d1; /* Borda sutil à direita */
+}
+
+.sidebar h3 {
+    color: white; /* Cor do título */
+    margin: 0;
+    padding: 16px 0; /* Padding aumentado para destacar o título */
+    border-bottom: 2px solid #0288d1; /* Linha mais grossa e visível abaixo do título */
+    font-size: 20px; /* Tamanho da fonte ajustado para um destaque adequado */
+    font-weight: bold; /* Tornar o título mais destacado */
+    text-align: center; /* Centralizar o título */
+}
+
+.sidebar .menu-items {
+    flex: 1; /* Ocupa o espaço restante disponível */
+    display: flex;
+    flex-direction: column;
+    gap: 8px; /* Espaçamento entre os botões */
+}
+
+.sidebar a {
+    color: white; /* Cor do texto dos links */
+    padding: 14px 18px; /* Padding dos links */
+    text-decoration: none; /* Remover o sublinhado */
+    display: block; /* Mostrar os links em bloco para facilitar o clique */
+    font-size: 16px; /* Tamanho da fonte ajustado para melhor legibilidade */
+    border-radius: 5px; /* Bordas arredondadas para links */
+    transition: background-color 0.3s, padding-left 0.3s; /* Adicionar transições suaves */
+}
+
+.sidebar a:hover {
+    background-color: #0288d1; /* Cor de fundo ao passar o mouse */
+    padding-left: 20px; /* Aumentar padding à esquerda ao passar o mouse */
+}
+
+.logout-form {
+    margin-top: auto; /* Empurrar o formulário para o final da barra lateral */
+    width: 100%;
+}
+
+.logout-form button {
+    background-color: #004d40; /* Cor neutra para o botão de logout */
+    color: white; /* Cor do texto do botão */
+    border: none;
+    border-radius: 5px;
+    padding: 12px;
+    width: 100%;
+    cursor: pointer;
+    font-size: 16px; /* Tamanho da fonte do botão ajustado para boa legibilidade */
+    font-weight: bold; /* Destacar o texto do botão */
+}
+
+.logout-form button:hover {
+    background-color: #00332c; /* Cor de fundo ao passar o mouse */
+}

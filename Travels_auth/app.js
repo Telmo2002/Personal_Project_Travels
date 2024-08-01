@@ -23,6 +23,8 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser());
 passport.deserializeUser(User.deserializeUser());
 
+var usersRouter = require('./routes/user');
+
 var app = express();
 
 // Configuração do middleware
@@ -38,8 +40,6 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
-// Roteador de usuários
-var usersRouter = require('./routes/user');
 app.use('/users', usersRouter);
 
 // Captura de 404 e redirecionamento para o handler de erros

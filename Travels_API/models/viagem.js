@@ -11,15 +11,8 @@ var viagemSchema = new mongoose.Schema({
     amount: Number,
     description: String, 
     date: Date,
-    gastos:[gastoSchema]
+    gastos:[gastoSchema],
+    userID: String,
 }, { collection: 'viagens' }); // Nome da coleção especificado aqui
-
-
-// var listaSchema = new mongoose.Schema({
-//     _id: String,
-//     designacao: String,
-//     data: String,
-//     produtos: [produtoSchema]
-// });
 
 module.exports = mongoose.model('viagem', viagemSchema)

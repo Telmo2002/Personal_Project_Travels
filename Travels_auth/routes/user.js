@@ -50,7 +50,7 @@ router.post('/register', function(req, res) {
               jwt.sign(
                   { 
                       username: trimmedUsername, // Usar o nome de usuário sanitizado
-                      level: req.user.level, 
+                    //   level: req.user.level, 
                       sub: 'telmo2002 project' 
                   }, 
                   "telmo2002",
@@ -79,9 +79,9 @@ router.post('/login', (req, res, next) => {
   // Remove espaços extras dos dados de login antes de chamar o middleware de autenticação
   req.body.username = req.body.username.trim();
   next();
-}, passport.authenticate('local'), function(req, res) {
+  }, passport.authenticate('local'), function(req, res) {
   jwt.sign(
-      { username: req.user.username, level: req.user.level, sub: 'telmo2002 project' },
+      { username: req.user.username, sub: 'telmo2002 project' },
       "telmo2002",
       { expiresIn: 3600 },
       (e, token) => {

@@ -25,32 +25,58 @@ function verifyToken(req, res, next) {
   if (token) {
     jwt.verify(token, 'telmo2002', (err, decoded) => {
       if (err) {
+        console.error('Erro ao verificar token:', err);
         return res.status(403).render('error', { error: 'Token inválido ou expirado.' });
       }
-      req.user = decoded;
+      req.userID = decoded.username;
+      console.log('User do Token decodificado:', req.userID);
       next();
     });
   } else {
+    console.error('Nenhum token fornecido.');
     res.status(403).render('error', { error: 'Token não fornecido.' });
   }
 }
 
+// Função para verificar se o usuário é o proprietário da viagem
+function verifyOwnership(req, res, next) {
+  const viagemId = req.params.id;
+
+  axios.get(`${env.apiAccessPoint}/getviagens/${viagemId}`)
+    .then(response => {
+      const viagem = response.data;
+
+      // Verificar se o usuário autenticado é o proprietário da viagem
+      if (viagem.userID !== req.userID) {
+        console.error('Acesso não autorizado: O utilizador não é o proprietário da viagem.');
+        return res.status(403).render('error', { error: 'Acesso não autorizado: você não é o proprietário desta viagem.' });
+      }
+
+      next();
+    })
+    .catch(err => {
+      console.error('Erro ao verificar propriedade da viagem:', err.response ? err.response.data : err.message);
+      res.render('error', { error: err.message });
+    });
+}
+
 // GET home page
 router.get('/', verifyToken, function(req, res) {
-  axios.get(`${env.apiAccessPoint}/getviagens`)
+  axios.get(`${env.apiAccessPoint}/getviagens/inicial/${req.userID}`)
     .then(response => {
+      console.log('Dados de viagens recebidos:', response.data);
       res.render('index', {
         viagens: response.data,
       });
     })
     .catch(err => {
-      console.error('Erro ao buscar viagens:', err.message);
+      console.error('Erro ao buscar viagens:', err.response ? err.response.data : err.message);
       res.render('error', { error: err.message });
     });
 });
 
 // GET detalhes da viagem
-router.get('/viagem/:id', verifyToken, function(req, res) {
+router.get('/viagem/:id', verifyToken, verifyOwnership, function(req, res) {
   var viagemId = req.params.id;
 
   axios.get(`${env.apiAccessPoint}/getviagens/${viagemId}`)
@@ -80,39 +106,45 @@ router.get('/viagem/:id', verifyToken, function(req, res) {
       });
     })
     .catch(err => {
-      console.error('Erro ao buscar detalhes da viagem:', err.message);
+      console.error('Erro ao buscar detalhes da viagem:', err.response ? err.response.data : err.message);
       res.render('error', { error: err.message });
     });
 });
 
 // POST add gasto to viagem
-router.post('/viagem/:id/add-gasto', verifyToken, function(req, res) {
+router.post('/viagem/:id/add-gasto', verifyToken, verifyOwnership, function(req, res) {
   const gastoData = {
     name: req.body.gastoName,
     amount: req.body.gastoQuantia,
     metodoPag: req.body.pagamento
   };
-
-  axios.post(`${env.apiAccessPoint}/getviagens/${req.params.id}/add-gasto`, gastoData)
+  console.log('Adicionando gasto:', gastoData);
+  
+  axios.post(`${env.apiAccessPoint}/getviagens/${req.params.id}/add-gasto`, gastoData, {
+    headers: { 'x-access-token': req.cookies.token || req.headers['x-access-token'] }
+  })
     .then(response => {
+      console.log('Gasto adicionado com sucesso:', response.data);
       res.redirect(`/viagem/${req.params.id}`);
     })
     .catch(err => {
-      console.error('Erro ao adicionar gasto:', err.message);
+      console.error('Erro ao adicionar gasto:', err.response ? err.response.data : err.message);
       res.render('error', { error: err.message });
     });
 });
 
 // POST para excluir uma viagem
-router.post('/viagem/:id/delete', verifyToken, function(req, res) {
-  console.log("eliminou")
-  axios.post(`${env.apiAccessPoint}/deleteViagens/${req.params.id}`)
+router.post('/viagem/:id/delete', verifyToken, verifyOwnership, function(req, res) {
+  axios.post(`${env.apiAccessPoint}/deleteViagens/${req.params.id}`, {}, {
+    headers: { 'x-access-token': req.cookies.token || req.headers['x-access-token'] }
+  })
     .then(response => {
+      console.log('Viagem excluída com sucesso:', response.data);
       req.flash('success', 'Viagem eliminada com sucesso.');
       res.redirect('/');
     })
     .catch(err => {
-      console.error('Erro ao eliminar viagem:', err.message);
+      console.error('Erro ao eliminar viagem:', err.response ? err.response.data : err.message);
       req.flash('error', 'Erro ao eliminar a viagem.');
       res.redirect('/');
     });
@@ -130,10 +162,12 @@ router.post('/submit-task', verifyToken, async function(req, res, next) {
       name: req.body.taskName,
       amount: req.body.quantiaDisp,
       description: req.body.taskDescription,
-      date: req.body.date
+      date: req.body.date,
+      userID: req.userID
     };
 
     const response = await axios.post(env.apiAccessPoint + "/addviagem", taskData);
+
     if (response.status === 200) {
       console.log('Viagem criada com sucesso!');
       req.flash('success', 'Viagem criada com sucesso.');
@@ -144,7 +178,7 @@ router.post('/submit-task', verifyToken, async function(req, res, next) {
       res.status(500).send('Erro ao criar a viagem');
     }
   } catch (error) {
-    console.error('Erro ao enviar dados para a API:', error);
+    console.error('Erro ao enviar dados para a API:', error.response ? error.response.data : error.message);
     req.flash('error', 'Erro ao criar a viagem.');
     res.status(500).send('Erro ao criar a viagem');
   }
@@ -183,7 +217,7 @@ router.get('/register', function(req, res) {
 
 // POST register
 router.post('/register', function(req, res) {
-  console.log("chegou ao register da inter")
+  console.log("Chegou ao register da inter");
   axios.post(`${env.authServerAccessPoint}/users/register`, req.body)
     .then(response => {
       req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');

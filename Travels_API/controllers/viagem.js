@@ -1,84 +1,67 @@
-var Viagem = require('../models/viagem')
+// controllers/viagem.js
+
+var Viagem = require('../models/viagem');
+
+// Listar todas as viagens de um usuário específico
+module.exports.listByUser = (userID) => {
+  console.log('userId recebido:', userID);
+  return Viagem
+    .find({ userID })  // Filtra as viagens pelo userId
+    .sort({ date: -1 })  // Corrigido para 'date'
+    .then(resposta => resposta)
+    .catch(erro => {
+      console.error('Erro na consulta de viagens:', erro);
+      throw erro;  // Lance o erro para tratamento na rota
+    });
+};
 
 
-module.exports.list = () => {
-    return Viagem
-            .find()
-            .sort({data:-1})
-            .then(resposta => {
-                return resposta
-            })
-            .catch(erro => {
-                return erro
-            })
-}
-
-// module.exports.getViagem = id => {
-//     return Viagem.findOne({_id:id})
-//             .then(resposta => {
-//                 return resposta
-//             })
-//             .catch(erro => {
-//                 return erro
-//             })
-// }
-
+// Obter uma viagem específica pelo ID
 module.exports.getViagem = id => {
     return Viagem.findById(id).exec();
-  };
-  
+};
 
+// Adicionar uma nova viagem associada a um usuário específico
 module.exports.addViagem = v => {
-    if (typeof v.amount === 'string') {
-        v.amount = Number(v.amount);
-    }
-    if (v.date) {
-        v.date = new Date(v.date);
-    }
-    return Viagem.create(v)
-        .then(resposta => {
-            console.log("Resposta do banco de dados:", resposta);
-            return resposta;
-        })
-        .catch(erro => {
-            console.log("Erro ao criar viagem:", erro);
-            return erro;
-        });
-}
+  if (typeof v.amount === 'string') {
+      v.amount = Number(v.amount);
+  }
+  if (v.date) {
+      v.date = new Date(v.date);
+  }
+  return Viagem.create(v)
+      .then(resposta => {
+          return resposta;
+      })
+      .catch(erro => {
+          throw erro; // Lance o erro para tratamento na rota
+      });
+};
 
-// module.exports.updateViagem = l => {
-//     return Viagem.updateOne({_id:l._id}, l)
-//             .then(resposta => {
-//                 return resposta
-//             })
-//             .catch(erro => {
-//                 return erro
-//             })
-// }
-
+// Deletar uma viagem específica pelo ID
 module.exports.deleteViagem = (id) => {
     return Viagem.deleteOne({ _id: id })
       .then(resposta => {
         if (resposta.deletedCount === 0) {
-          // Se nada foi deletado, a viagem não foi encontrada
           throw new Error('Viagem não encontrada.');
         }
         return resposta;
       })
       .catch(erro => {
-        // Se houver um erro, retornamos o erro para ser tratado na rota
-        throw erro;
+        throw erro; // Lance o erro para tratamento na rota
       });
-  }
+};
 
-
+// Adicionar um gasto a uma viagem específica
 module.exports.addGasto = (id, gasto) => {
     return Viagem.findByIdAndUpdate(
       id,
       { $push: { gastos: gasto } },
       { new: true, useFindAndModify: false }
     ).exec();
-  };
+};
+
+
 
 // module.exports.categorias = () => {
 //     return Viagem.distinct("produtos.categoria")

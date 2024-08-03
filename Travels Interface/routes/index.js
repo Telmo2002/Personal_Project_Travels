@@ -217,15 +217,33 @@ router.get('/register', function(req, res) {
 
 // POST register
 router.post('/register', function(req, res) {
-  console.log("Chegou ao register da inter");
+  console.log("Dados recebidos no backend:", req.body); // Log dos dados recebidos
+  console.log("Arquivo recebido no backend:", req.file); // Log do arquivo recebido
   axios.post(`${env.authServerAccessPoint}/users/register`, req.body)
+      .then(response => {
+          req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');
+          res.redirect('/login');
+      })
+      .catch(error => {
+          console.error('Erro ao registrar:', error.response ? error.response.data : error.message);
+          req.flash('error', 'Ocorreu um erro ao registrar. Tente novamente.');
+          res.redirect('/register');
+      });
+});
+
+
+// GET PROFILE
+router.get('/profile', verifyToken, function(req, res) {
+  axios.get(`${env.authServerAccessPoint}/users/profile`, {
+    headers: { 'x-access-token': req.cookies.token || req.headers['x-access-token'] }
+  })
     .then(response => {
-      req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');
-      res.redirect('/login');
+      const user = response.data;
+      res.render('profile', { user });
     })
     .catch(error => {
-      req.flash('error', 'O username inserido já existe. Tente outro!');
-      res.redirect('/register');
+      console.error('Erro ao buscar perfil do usuário:', error.response ? error.response.data : error.message);
+      res.render('error', { error: 'Erro ao carregar perfil.' });
     });
 });
 

@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Profile - Travels</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="/stylesheets/sidebar.css"> <!-- Link para o CSS externo -->
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      background-color: #f0f0f0;
+      margin: 0;
+      display: flex;
+    }
+    .sidebar {
+      width: 15%;
+      background-color: #f8f8f8;
+      padding: 15px;
+      position: fixed;
+      height: 100vh;
+      overflow: auto;
+      box-shadow: 2px 0 5px rgba(0, 0, 0, 0.1);
+    }
+    .sidebar h3 {
+      margin-top: 0;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      color: #333;
+      text-decoration: none;
+      margin-bottom: 10px;
+      border-radius: 4px;
+    }
+    .sidebar a:hover {
+      background-color: #ddd;
+    }
+    .sidebar .logout-form {
+      margin-top: 20px;
+    }
+    .sidebar .logout-form button {
+      background-color: #f44336;
+      color: white;
+      border: none;
+      padding: 10px 20px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .sidebar .logout-form button:hover {
+      background-color: #d32f2f;
+    }
+    .content {
+      margin-left: 15%;
+      padding: 20px;
+      width: 85%;
+    }
+    .profile-picture {
+      border-radius: 50%;
+      width: 150px;
+      height: 150px;
+      object-fit: cover;
+      margin-bottom: 20px;
+    }
+    .profile-info {
+      text-align: left;
+    }
+    .profile-info h3 {
+      margin-bottom: 5px;
+    }
+    .profile-info p {
+      margin: 5px 0;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <h3>Menu</h3>
+  <a href="/" class="w3-bar-item w3-button">Página inicial</a>
+  <a href="#" class="w3-bar-item w3-button">Sobre nós</a>
+  
+  <!-- Logout Button -->
+  <form action="/logout" method="POST" class="logout-form">
+    <button type="submit">Terminar Sessão</button>
+  </form>
+</div>
+
+<!-- Page Content -->
+<div class="content">
+
+  <div class="w3-container w3-teal">
+    <h1>Your Profile</h1>
+  </div>
+
+  <div class="w3-container">
+    <img src="/users/profile-picture/<%= user.profilePicture %>" alt="Profile Picture" class="profile-picture">
+    <div class="profile-info">
+      <h3>Username:</h3>
+      <p><%= user.username %></p>
+      <h3>Full Name:</h3>
+      <p><%= user.name %></p>
+      <h3>Birthdate:</h3>
+      <p><%= new Date(user.birthdate).toLocaleDateString() %></p>
+      <h3>Description:</h3>
+      <p><%= user.description %></p>
+      <h3>Member since:</h3>
+      <p><%= new Date(user.dateCreated).toLocaleDateString() %></p>
+    </div>
+  </div>
+
+</div>
+
+</body>
+</html>

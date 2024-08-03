@@ -1,15 +1,20 @@
-const mongoose = require('mongoose')
-var passportLocalMongoose = require('passport-local-mongoose');
+// authserver/models/user.js
+const mongoose = require('mongoose');
+const passportLocalMongoose = require('passport-local-mongoose');
 
-var userSchema = new mongoose.Schema({
+const userSchema = new mongoose.Schema({
     username: String,
     password: String,
-    //name: String,
-    //level: String,
-    active: Boolean,
-    dateCreated: String
-  });
+    name: String,
+    birthdate: Date,
+    description: String,
+    dateCreated: String,
+    profilePicture: {
+        type: String, // Nome do arquivo ou ID do GridFS
+        default: null
+    }
+});
 
 userSchema.plugin(passportLocalMongoose);
 
-module.exports = mongoose.model('user', userSchema)
+module.exports = mongoose.model('User', userSchema);

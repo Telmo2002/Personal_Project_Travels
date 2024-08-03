@@ -96,24 +96,26 @@
 </head>
 <body>
 
-<div class="form-container w3-card">
-  <div class="form-header">
-    Register
+  <div class="form-container w3-card">
+    <div class="form-header">Register</div>
+    <form action="/register" method="post">
+      <input class="w3-input" type="text" id="username" name="username" placeholder="Username" required>
+      <input class="w3-input" type="password" id="password" name="password" placeholder="Password" required>
+      <input class="w3-input" type="text" id="name" name="name" placeholder="Full Name" required>
+      <input class="w3-input" type="date" id="birthdate" name="birthdate" placeholder="Birthdate" required>
+      <textarea class="w3-input" id="description" name="description" placeholder="Short description about you" rows="3"></textarea>
+      <input class="w3-input" type="file" id="profilePicture" name="profilePicture" accept="image/*">
+      <button class="w3-button w3-round w3-margin-top" type="submit">Register</button>
+    </form>    
+    <a href="/login" class="toggle-link">Already have an account? Log in here</a>
   </div>
-  <form action="/register" method="post">
-    <input class="w3-input" type="text" id="username" name="username" placeholder="Username" required>
-    <input class="w3-input" type="password" id="password" name="password" placeholder="Password" required>
-    <button class="w3-button w3-round w3-margin-top" type="submit">Register</button>
-  </form>
-  <a href="/login" class="toggle-link">Already have an account? Log in here</a>
-</div>
-
-<% if (error) { %>
-  <div id="toast-error" class="toast toast-error">
-    <h3>Erro:</h3>
-    <p><%= error %></p>
-  </div>
-<% } %>
+  
+  <% if (error) { %>
+    <div id="toast-error" class="toast toast-error">
+      <h3>Error:</h3>
+      <p><%= error %></p>
+    </div>
+  <% } %>
 
 <script>
   document.addEventListener('DOMContentLoaded', function() {

@@ -2,111 +2,101 @@ const express = require('express');
 const router = express.Router();
 const jwt = require('jsonwebtoken');
 const passport = require('passport');
-const auth = require('../auth/auth'); // Middleware de autenticação
-const multer = require('multer');
-const GridFsStorage = require('multer-gridfs-storage').GridFsStorage;
-const gfs = require('../config/gridfs');
-const User = require('../models/user');
-
-
-// Configuração do multer para GridFS
-const storage = new GridFsStorage({
-    url: 'mongodb://127.0.0.1/travels_auth',
-    file: (req, file) => ({
-        bucketName: 'uploads',
-        filename: file.originalname
-    })
-});
-
-const upload = multer({ storage });
-
-// Rota para upload de imagem de perfil
-router.post('/profile-picture', auth.verificaAcesso, upload.single('profilePicture'), (req, res) => {
-    if (!req.file) {
-        return res.status(400).send('Nenhum arquivo enviado.');
-    }
-
-    User.findByIdAndUpdate(req.user._id, { profilePicture: req.file.filename }, { new: true })
-        .then(user => res.status(200).json(user))
-        .catch(err => res.status(500).json({ error: 'Erro ao atualizar utilizador: ' + err.message }));
-});
-
-// Rota para recuperar a imagem de perfil
-router.get('/profile-picture/:filename', auth.verificaAcesso, (req, res) => {
-    gfs.files.findOne({ filename: req.params.filename }, (err, file) => {
-        if (err || !file) {
-            return res.status(404).json({ error: 'Arquivo não encontrado.' });
-        }
-
-        const readstream = gfs.createReadStream({ filename: file.filename });
-        readstream.pipe(res);
-    });
-});
-
-// Rota para obter perfil do utilizador
-router.get('/profile', auth.verificaAcesso, (req, res) => {
-    User.findById(req.user._id)
-        .then(user => res.render('profile', { user }))
-        .catch(err => res.status(500).json({ error: 'Erro ao buscar perfil: ' + err.message }));
-});
+// const auth = require('../auth/auth'); // Middleware de autenticação
+const User = require('../controllers/user')
+const UserModel = require('../models/user');
 
 // Rota para listar todos os utilizadores
-router.get('/', auth.verificaAcesso, (req, res) => {
+router.get('/', (req, res) => {
     User.find({})
         .then(users => res.status(200).json({ users }))
         .catch(err => res.status(500).json({ error: 'Erro ao listar utilizadores: ' + err.message }));
 });
 
 // Rota para obter um usuário específico
-router.get('/:id', auth.verificaAcesso, (req, res) => {
-    User.findById(req.params.id)
-        .then(user => res.status(200).json({ user }))
-        .catch(err => res.status(500).json({ error: 'Erro ao buscar utilizador: ' + err.message }));
+// router.get('/profile/:userID', async (req, res) => {
+//     try {
+//         const user = await User.getUserByUsername(req.params.userID);
+//         if (!user) {
+//             return res.status(404).json({ error: 'Utilizador não encontrado' });
+//         }
+//         res.status(200).json({ user });
+//     } catch (err) {
+//         console.error('Erro ao procurar o utilizador:', err.message);
+//         res.status(500).json({ error: 'Erro ao procurar o utilizador: ' + err.message });
+//     }
+// });
+
+
+// Rota de teste para procurar um utilizador diretamente pelo username
+
+
+
+//Rota para obter um utilizador específico
+router.get('/profile/:userID', (req, res) => {
+    User.getUserByUsername(req.params.userID)
+        .then(user => {
+            console.log(user)
+            if (!user) {
+                return res.status(404).json({ error: 'Utilizador não encontrado' });
+            }
+            res.status(200).json({ user });
+        })
+        .catch(err => {
+            console.error('Erro ao buscar utilizador:', err.message); // Log detalhado
+            res.status(500).json({ error: 'Erro ao buscar utilizador: ' + err.message });
+        });
 });
 
-// Rota para registrar um novo utilizador
-router.post('/register', upload.single('profilePicture'), (req, res) => {
-    console.log("Dados recebidos no backend:", req.body); // Log dos dados recebidos
-    console.log("Arquivo recebido no backend:", req.file); // Log do arquivo recebido
 
-    const { username, password, name, birthdate, description } = req.body;
+// Rota para editar um utilizador existente
+router.put('/profile/edit/:userID', (req, res) => {
+    const userId = req.params.userID;
+    const updatedInfo = req.body;
+
+    User.updateUser(userId, updatedInfo)
+        .then(result => {
+            if (result.nModified === 0) {
+                return res.status(404).json({ message: 'Utilizador não encontrado ou nenhuma alteração realizada.' });
+            }
+            res.status(200).json({ message: 'Utilizador atualizado com sucesso!' });
+        })
+        .catch(err => {
+            console.error('Erro ao atualizar utilizador:', err.message);
+            res.status(500).json({ error: 'Erro ao atualizar utilizador: ' + err.message });
+        });
+});
+
+
+
+// Rota para registrar um novo utilizador
+router.post('/register', (req, res) => {
+    const { username, password, name, birthdate, description , profilePicture} = req.body;
     const dateCreated = new Date().toISOString().substring(0, 19);
 
+    // Verificar campos obrigatórios
     if (!username || !password) {
-        return res.status(400).json({ error: "Nome de utilizador e senha são obrigatórios." });
+        return res.status(400).json({ error: "Nome de usuário e senha são obrigatórios." });
     }
 
-    const newUser = new User({
+    // Criar o novo usuário
+    const newUser = new UserModel({
         username: username.trim(),
         name,
         birthdate: birthdate ? new Date(birthdate) : undefined,
         description,
         dateCreated,
-        profilePicture: req.file ? req.file.filename : null
+        profilePicture
     });
 
-    User.register(newUser, password, (err, user) => {
+    // Registrar o usuário usando o método `register` do `passport-local-mongoose`
+    UserModel.register(newUser, password, (err) => {
         if (err) {
             return res.status(500).json({ error: err.message });
         }
 
-        req.login(user, (err) => {
-            if (err) {
-                return res.status(500).json({ error: "Erro ao autenticar o utilizador: " + err.message });
-            }
-
-            jwt.sign(
-                { username: user.username, sub: 'telmo2002 project' },
-                "telmo2002",
-                { expiresIn: 3600 },
-                (err, token) => {
-                    if (err) {
-                        return res.status(500).json({ error: "Erro na geração do token: " + err.message });
-                    }
-                    res.status(201).json({ token });
-                }
-            );
-        });
+        // Respondendo que o registro foi bem-sucedido
+        res.status(201).json({ message: 'Utilizador registrado com sucesso!' });
     });
 });
 

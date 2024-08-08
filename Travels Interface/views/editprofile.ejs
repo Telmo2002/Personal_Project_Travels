@@ -3,14 +3,13 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Perfil - Travels</title>
+  <title>Editar Perfil - Travels</title>
   <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
   <link rel="stylesheet" href="/stylesheets/sidebar.css"> <!-- Link para o CSS externo -->
   <style>
     body {
       margin: 0;
       font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
     }
     .sidebar {
       position: fixed;
@@ -20,9 +19,6 @@
       height: 100%;
       background-color: #00bcd4; /* Azul ciano */
       padding-top: 20px;
-      display: flex;
-      flex-direction: column;
-      justify-content: space-between;
     }
     .sidebar h3 {
       text-align: center;
@@ -42,6 +38,7 @@
     }
     .sidebar .logout-form {
       text-align: center;
+      margin-top: auto;
       margin-bottom: 20px;
     }
     .sidebar .logout-form button {
@@ -49,6 +46,7 @@
       border: none;
       color: white;
       padding: 10px;
+      text-align: center;
       font-size: 18px;
       cursor: pointer;
       border-radius: 4px;
@@ -73,45 +71,50 @@
       border-radius: 8px 8px 0 0;
     }
     .profile-picture {
-      width: 150px;
-      height: 150px;
+      width: 120px;
+      height: 120px;
       border-radius: 50%;
       object-fit: cover;
       margin: 0 auto;
       display: block;
       border: 4px solid #4CAF50; /* Contorno verde */
     }
-    .profile-info {
-      margin-top: 30px;
+    .form-container {
       text-align: center;
+      margin-top: 20px;
     }
-    .profile-info p {
-      font-size: 18px;
-      color: #333;
-      margin: 10px 0;
+    .form-container form {
+      display: inline-block;
+      text-align: left;
+      max-width: 500px;
+      width: 100%;
     }
-    .profile-info label {
+    .form-container label {
       font-weight: bold;
-      display: block;
-      margin-bottom: 5px;
-      color: #555;
     }
-    .edit-profile-button {
+    .form-container input[type="text"],
+    .form-container input[type="date"],
+    .form-container textarea,
+    .form-container input[type="file"] {
+      width: 100%;
+      padding: 8px;
+      margin: 8px 0;
+      box-sizing: border-box;
+      border-radius: 4px;
+      border: 1px solid #ccc;
+    }
+    .form-container button {
       background-color: #4CAF50;
       color: white;
-      padding: 12px 20px;
+      padding: 12px;
       border-radius: 8px;
       font-size: 16px;
       cursor: pointer;
       transition: background-color 0.3s ease;
       border: none;
-      display: block;
-      margin: 30px auto;
-      text-align: center;
-      width: 200px;
-      text-decoration: none;
+      width: 100%;
     }
-    .edit-profile-button:hover {
+    .form-container button:hover {
       background-color: #388E3C; /* Verde mais escuro */
     }
   </style>
@@ -120,11 +123,10 @@
 
 <!-- Sidebar -->
 <div class="sidebar">
-  <div>
-    <h3>Menu</h3>
-    <a href="/" class="w3-bar-item w3-button">Página inicial</a>
-    <a href="#" class="w3-bar-item w3-button">Sobre nós</a>
-  </div>
+  <h3>Menu</h3>
+  <a href="/" class="w3-bar-item w3-button">Página inicial</a>
+  <a href="/profile" class="w3-bar-item w3-button">Perfil</a>
+  <a href="#" class="w3-bar-item w3-button">Sobre nós</a>
   
   <!-- Logout Button -->
   <form action="/logout" method="POST" class="logout-form">
@@ -136,20 +138,29 @@
 <div class="page-content">
 
   <div class="w3-container w3-teal">
-    <h1 class="profile-header">Perfil</h1>
+    <h1 class="profile-header">Editar Perfil</h1>
   </div>
 
   <div class="w3-container">
     <img src="<%= user.profilePicture ? '/images/users' + user.profilePicture : '/images/avatar.png' %>" alt="Profile Picture" class="profile-picture">
     
-    <div class="profile-info">
-      <p><label for="username">Username:</label> <%= user.username %></p>
-      <p><label for="name">Nome Completo:</label> <%= user.name %></p>
-      <p><label for="birthdate">Data de Nascimento:</label> <%= new Date(user.birthdate).toLocaleDateString() %></p>
-      <p><label for="description">Descrição:</label> <%= user.description || 'Nenhuma descrição disponível' %></p>
-    </div>
+    <div class="form-container">
+      <form action="/profile/edit" method="POST" enctype="multipart/form-data">
+        <label for="name">Nome Completo:</label>
+        <input type="text" id="name" name="name" value="<%= user.name %>" required>
 
-    <a href="/profile/edit" class="edit-profile-button">Editar Perfil</a>
+        <label for="birthdate">Data de Nascimento:</label>
+        <input type="date" id="birthdate" name="birthdate" value="<%= new Date(user.birthdate).toISOString().substr(0, 10) %>" required>
+
+        <label for="description">Descrição:</label>
+        <textarea id="description" name="description"><%= user.description %></textarea>
+
+        <label for="profilePicture">Imagem de Perfil:</label>
+        <input type="file" id="profilePicture" name="profilePicture" accept="image/*">
+
+        <button type="submit">Guardar Alterações</button>
+      </form>
+    </div>
   </div>
 
 </div>

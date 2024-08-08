@@ -3,6 +3,26 @@ var router = express.Router();
 var env = require('../config/env');
 var axios = require('axios');
 var jwt = require('jsonwebtoken');
+const multer = require('multer');
+const path = require('path');
+const fs = require('fs');
+
+// Configurar o multer para salvar as imagens na pasta 'public/images/users'
+const storage = multer.diskStorage({
+  destination: function (req, file, cb) {
+      const uploadPath = path.join(__dirname, '..', 'public', 'images', 'users');
+      if (!fs.existsSync(uploadPath)) {
+          fs.mkdirSync(uploadPath, { recursive: true });
+      }
+      cb(null, uploadPath);
+  },
+  filename: function (req, file, cb) {
+      const ext = path.extname(file.originalname);
+      cb(null, req.body.username.trim() + ext); // Salva com o nome do usuário
+  }
+});
+
+const upload = multer({ storage: storage });
 
 // Função para formatar a data
 function formatDate(dateString) {
@@ -216,35 +236,86 @@ router.get('/register', function(req, res) {
 });
 
 // POST register
-router.post('/register', function(req, res) {
-  console.log("Dados recebidos no backend:", req.body); // Log dos dados recebidos
-  console.log("Arquivo recebido no backend:", req.file); // Log do arquivo recebido
-  axios.post(`${env.authServerAccessPoint}/users/register`, req.body)
-      .then(response => {
-          req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');
-          res.redirect('/login');
-      })
-      .catch(error => {
-          console.error('Erro ao registrar:', error.response ? error.response.data : error.message);
-          req.flash('error', 'Ocorreu um erro ao registrar. Tente novamente.');
-          res.redirect('/register');
-      });
+router.post('/register', upload.single('profilePicture'), (req, res) => {
+  const userData = {
+    username: req.body.username,
+    password: req.body.password,
+    name: req.body.name,
+    birthdate: req.body.birthdate,
+    description: req.body.description,
+    profilePicture: req.file ? req.file.filename : null // Guarda o caminho relativo da imagem
+  };
+
+  // Enviar os dados ao auth_server
+  axios.post(`${env.authServerAccessPoint}/users/register`, userData)
+    .then(response => {
+        req.flash('success', 'Registro bem-sucedido. Por favor, faça login.');
+        res.redirect('/login');
+    })
+    .catch(error => {
+        console.error('Erro ao registrar:', error.response ? error.response.data : error.message);
+        req.flash('error', 'Ocorreu um erro ao registrar. Tente novamente.');
+        res.redirect('/register');
+    });
 });
+
 
 
 // GET PROFILE
 router.get('/profile', verifyToken, function(req, res) {
-  axios.get(`${env.authServerAccessPoint}/users/profile`, {
-    headers: { 'x-access-token': req.cookies.token || req.headers['x-access-token'] }
-  })
+  const userId = req.userID;
+  console.log('User ID:', userId);
+
+  axios.get(`${env.authServerAccessPoint}/users/profile/${userId}`)
     .then(response => {
-      const user = response.data;
+      // Aceder o objeto user dentro da resposta
+      const user = response.data.user;
       res.render('profile', { user });
     })
     .catch(error => {
-      console.error('Erro ao buscar perfil do usuário:', error.response ? error.response.data : error.message);
+      console.error('Erro ao buscar perfil do utilizador:', error.response ? error.response.data : error.message);
       res.render('error', { error: 'Erro ao carregar perfil.' });
     });
 });
+
+
+// Rota para a página de edição de perfil
+router.get('/profile/edit', verifyToken, function(req, res) {
+  const userId = req.userID;
+
+  axios.get(`${env.authServerAccessPoint}/users/profile/${userId}`)
+    .then(response => {
+      const user = response.data.user;
+      res.render('editProfile', { user });
+    })
+    .catch(error => {
+      console.error('Erro ao carregar perfil para edição:', error.response ? error.response.data : error.message);
+      res.render('error', { error: 'Erro ao carregar perfil para edição.' });
+    });
+});
+
+// Rota para processar a edição de perfil
+router.post('/profile/edit', verifyToken, (req, res) => {
+  const userId = req.userID;
+  const updatedData = {
+    name: req.body.name,
+    birthdate: req.body.birthdate,
+    description: req.body.description
+  };
+
+  if (req.file) {
+    updatedData.profilePicture = req.file.filename; // Armazena o nome do arquivo da imagem de perfil
+  }
+
+  axios.put(`${env.authServerAccessPoint}/users/profile/edit/${userId}`, updatedData)
+    .then(response => {
+      res.redirect('/profile'); // Redireciona para o perfil atualizado
+    })
+    .catch(error => {
+      console.error('Erro ao salvar alterações no perfil:', error.response ? error.response.data : error.message);
+      res.render('error', { error: 'Erro ao salvar alterações no perfil.' });
+    });
+});
+
 
 module.exports = router;

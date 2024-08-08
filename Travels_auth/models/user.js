@@ -3,16 +3,13 @@ const mongoose = require('mongoose');
 const passportLocalMongoose = require('passport-local-mongoose');
 
 const userSchema = new mongoose.Schema({
-    username: String,
+    username: { type: String, required: true, unique: true },
     password: String,
     name: String,
     birthdate: Date,
     description: String,
     dateCreated: String,
-    profilePicture: {
-        type: String, // Nome do arquivo ou ID do GridFS
-        default: null
-    }
+    profilePicture: String
 });
 
 userSchema.plugin(passportLocalMongoose);

@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Sobre Nós - Travels</title>
+  <link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3.css">
+  <link rel="stylesheet" href="/stylesheets/sidebar.css"> <!-- Link para o CSS externo -->
+  <style>
+    body {
+      margin: 0;
+      font-family: Arial, sans-serif;
+      background-color: #f4f4f4;
+    }
+    .sidebar {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 15%;
+      height: 100%;
+      background-color: #00bcd4; /* Azul ciano */
+      padding-top: 20px;
+      display: flex;
+      flex-direction: column;
+      justify-content: space-between;
+    }
+    .sidebar h3 {
+      text-align: center;
+      font-size: 24px;
+      color: white;
+    }
+    .sidebar a {
+      display: block;
+      padding: 10px;
+      text-align: center;
+      color: white;
+      text-decoration: none;
+      font-size: 18px;
+    }
+    .sidebar a:hover {
+      background-color: #0097a7;
+    }
+    .sidebar .logout-form {
+      text-align: center;
+      margin-bottom: 20px;
+    }
+    .sidebar .logout-form button {
+      background-color: #f44336;
+      border: none;
+      color: white;
+      padding: 10px;
+      font-size: 18px;
+      cursor: pointer;
+      border-radius: 4px;
+    }
+    .sidebar .logout-form button:hover {
+      background-color: #d32f2f;
+    }
+    .page-content {
+      margin-left: 15%;
+      padding: 20px;
+    }
+    .w3-container.w3-teal {
+      margin-bottom: 20px;
+    }
+    .about-header {
+      margin: 0;
+      padding: 20px;
+      background-color: #4CAF50;
+      color: white;
+      text-align: center;
+      font-size: 28px;
+      border-radius: 8px 8px 0 0;
+    }
+    .about-info {
+      margin-top: 20px;
+      line-height: 1.6;
+    }
+    .about-info h2 {
+      color: #333;
+    }
+    .about-info p {
+      font-size: 18px;
+      color: #555;
+    }
+    .about-info a {
+      color: #4CAF50;
+      text-decoration: none;
+    }
+    .about-info a:hover {
+      text-decoration: underline;
+    }
+  </style>
+</head>
+<body>
+
+<!-- Sidebar -->
+<div class="sidebar">
+  <div>
+    <h3>Menu</h3>
+    <a href="/" class="w3-bar-item w3-button">Página Inicial</a>
+    <a href="/profile" class="w3-bar-item w3-button">Perfil</a>
+  </div>
+  
+  <!-- Logout Button -->
+  <form action="/logout" method="POST" class="logout-form">
+    <button type="submit">Terminar Sessão</button>
+  </form>
+</div>
+
+<!-- Page Content -->
+<div class="page-content">
+
+  <div class="w3-container w3-teal">
+    <h1 class="about-header">Sobre Nós</h1>
+  </div>
+
+  <div class="w3-container about-info">
+    <h2>Motivação</h2>
+    <p>
+      Nas minhas viagens, costumo apontar quanto gasto para me orientar e ter noção de onde ficou o dinheiro. Isto torna-se ainda mais importante quando realizo às vezes viagens a trabalho e levo dinheiro em mão para a viagem. Ao longo da viagem acabo por precisar de utilizar o cartão por conveniência, utilizando do meu próprio dinheiro. Desta forma tenho a necessidade de apontar nas notas o que vou gastando, quanto e se paguei com cartão ou com o dinheiro que levei comigo. Esta não é a maneira mais viável uma vez que se torna muito trabalhoso de ao fim da viagem verificar pagamento a pagamento se foi em cartão ou em dinheiro e somar tudo para perceber o lucro que se teve.
+    </p>
+    
+    <h2>Ideia</h2>
+    <p>
+      A minha ideia com este projeto era criar um site que tivesse o mesmo funcionamento das notas de guardar os gastos que fiz na viagem, mantendo-me informado do que foi gasto em dinheiro ou em cartão e do que ainda se encontra disponível do plafond que atribuí inicialmente. Assim, com este projeto é possível criar viagens atribuindo um nome, uma descrição (opcional), uma quantia para a viagem e uma data. Ao criar somos redirecionados para a página inicial onde surge um botão com o nome da viagem criada, ao selecionar o mesmo surgem as informações que colocamos juntamente com informações sobre a quantia disponível do plafond que atribuímos, a quantia gasta em cartão e o quantia gasta em dinheiro. Logo abaixo surge uma secção onde é possível "Adicionar gastos", ou seja, introduzir o nome do "gasto" que efetuamos, a quantia gasta e selecionar um de dois métodos de pagamento disponíveis (cartão ou dinheiro), por fim clicamos em adicionar gasto, o qual irá surgir imediatamente abaixo da secção de adicionar.
+    </p>
+    
+    <h2>Sobre o Autor</h2>
+    <p>
+      Este projeto é uma iniciativa pessoal para praticar e aprimorar as minhas habilidades de desenvolvimento. Sou aluno da Universidade do Minho e estou prestes a iniciar o segundo ano do Mestrado em Engenharia Informática. Este projeto serve como uma excelente oportunidade para aplicar conhecimentos adquiridos e explorar novas tecnologias, além de ser uma forma de me manter envolvido com o desenvolvimento de software fora do ambiente acadêmico.
+    </p>
+    
+    <p>
+      Se tiver dúvidas ou sugestões, sinta-se à vontade para entrar em contato através do <a href="mailto:telmoleo2002@gmail.com">meu email pessoal</a>.
+    </p>
+  </div>
+
+</div>
+
+</body>
+</html>

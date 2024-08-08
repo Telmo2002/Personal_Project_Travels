@@ -18,7 +18,7 @@ const storage = multer.diskStorage({
   },
   filename: function (req, file, cb) {
     const ext = path.extname(file.originalname);
-    cb(null, req.userID.trim() + ext); // Usa o username para nomear o arquivo
+    cb(null, req.userID + ext); // Usa o username para nomear o arquivo
   }
 });
 
@@ -322,5 +322,9 @@ router.post('/profile/edit', verifyToken, upload.single('profilePicture'), (req,
 });
 
 
+// Get About Us
+router.get('/about', verifyToken, function(req, res, next) {
+  res.render('aboutus');
+});
 
 module.exports = router;

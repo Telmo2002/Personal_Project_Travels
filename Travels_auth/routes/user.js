@@ -50,11 +50,20 @@ router.get('/profile/:userID', (req, res) => {
 
 
 // Rota para editar um utilizador existente
+// Rota para editar um utilizador existente
 router.put('/profile/edit/:userID', (req, res) => {
     const userId = req.params.userID;
     const updatedInfo = req.body;
 
-    User.updateUser(userId, updatedInfo)
+    // Prepara o objeto de atualização, omitindo campos que não estão presentes
+    const updateFields = {};
+    if (updatedInfo.name) updateFields.name = updatedInfo.name;
+    if (updatedInfo.birthdate) updateFields.birthdate = updatedInfo.birthdate;
+    if (updatedInfo.description) updateFields.description = updatedInfo.description;
+    if (updatedInfo.profilePicture) updateFields.profilePicture = updatedInfo.profilePicture;
+
+    // Atualiza o usuário com os campos preparados
+    User.updateUser(userId, updateFields)
         .then(result => {
             if (result.nModified === 0) {
                 return res.status(404).json({ message: 'Utilizador não encontrado ou nenhuma alteração realizada.' });
@@ -66,6 +75,7 @@ router.put('/profile/edit/:userID', (req, res) => {
             res.status(500).json({ error: 'Erro ao atualizar utilizador: ' + err.message });
         });
 });
+
 
 
 

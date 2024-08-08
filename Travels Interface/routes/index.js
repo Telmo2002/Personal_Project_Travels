@@ -10,17 +10,18 @@ const fs = require('fs');
 // Configurar o multer para salvar as imagens na pasta 'public/images/users'
 const storage = multer.diskStorage({
   destination: function (req, file, cb) {
-      const uploadPath = path.join(__dirname, '..', 'public', 'images', 'users');
-      if (!fs.existsSync(uploadPath)) {
-          fs.mkdirSync(uploadPath, { recursive: true });
-      }
-      cb(null, uploadPath);
+    const uploadPath = path.join(__dirname, '..', 'public', 'images', 'users');
+    if (!fs.existsSync(uploadPath)) {
+      fs.mkdirSync(uploadPath, { recursive: true });
+    }
+    cb(null, uploadPath);
   },
   filename: function (req, file, cb) {
-      const ext = path.extname(file.originalname);
-      cb(null, req.body.username.trim() + ext); // Salva com o nome do usuário
+    const ext = path.extname(file.originalname);
+    cb(null, req.userID.trim() + ext); // Usa o username para nomear o arquivo
   }
 });
+
 
 const upload = multer({ storage: storage });
 
@@ -265,7 +266,6 @@ router.post('/register', upload.single('profilePicture'), (req, res) => {
 router.get('/profile', verifyToken, function(req, res) {
   const userId = req.userID;
   console.log('User ID:', userId);
-
   axios.get(`${env.authServerAccessPoint}/users/profile/${userId}`)
     .then(response => {
       // Aceder o objeto user dentro da resposta
@@ -295,18 +295,22 @@ router.get('/profile/edit', verifyToken, function(req, res) {
 });
 
 // Rota para processar a edição de perfil
-router.post('/profile/edit', verifyToken, (req, res) => {
-  const userId = req.userID;
+router.post('/profile/edit', verifyToken, upload.single('profilePicture'), (req, res) => {
+  const userId = req.userID; // Obter o username do token
+
+  // Dados atualizados com base no formulário
   const updatedData = {
-    name: req.body.name,
-    birthdate: req.body.birthdate,
-    description: req.body.description
+    name: req.body.name || undefined,
+    birthdate: req.body.birthdate || undefined,
+    description: req.body.description || undefined
   };
 
+  // Verifica se há um novo arquivo de imagem
   if (req.file) {
-    updatedData.profilePicture = req.file.filename; // Armazena o nome do arquivo da imagem de perfil
+    updatedData.profilePicture = req.file.filename; // Atualiza o nome do arquivo da imagem de perfil
   }
 
+  // Envia a solicitação de atualização para o servidor de autenticação
   axios.put(`${env.authServerAccessPoint}/users/profile/edit/${userId}`, updatedData)
     .then(response => {
       res.redirect('/profile'); // Redireciona para o perfil atualizado
@@ -316,6 +320,7 @@ router.post('/profile/edit', verifyToken, (req, res) => {
       res.render('error', { error: 'Erro ao salvar alterações no perfil.' });
     });
 });
+
 
 
 module.exports = router;
